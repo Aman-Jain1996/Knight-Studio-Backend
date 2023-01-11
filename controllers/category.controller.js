@@ -15,11 +15,13 @@ const getCategoryHandler = async (req, res) => {
   try {
     const categoryId = req.params.id;
     const category = await Category.findById(categoryId);
+
+    if (!category) {
+      return res.status(404).json({ message: "Couldn't find category" });
+    }
     return res.json({ category });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ error: err.message, message: "Couldn't get category" });
+    return res.status(404).json({ message: "Couldn't get category" });
   }
 };
 

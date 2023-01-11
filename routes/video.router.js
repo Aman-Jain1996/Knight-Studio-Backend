@@ -1,8 +1,12 @@
 const express = require("express");
-const { getAllVideosHandler, getVideoHandler } = require("../controllers");
+const {
+  getAllVideosHandler,
+  getVideoHandler,
+  postVideosHandler,
+} = require("../controllers");
 const router = express.Router();
 
-router.get("/", getAllVideosHandler);
-router.post("/:id", getVideoHandler);
+router.get("/", getAllVideosHandler).post("/", postVideosHandler);
+router.get("/:id", getVideoHandler);
 
 module.exports = router;

@@ -18,6 +18,9 @@ const postPlaylistHandler = async (req, res) => {
     const { playlist } = req.body;
     const user = await User.findById(userId);
 
+    if (user.playlists.find((play) => play.name === playlist.name))
+      return res.status(409).json({ message: "Playlist already exists" });
+
     const newPlaylist = {
       name: playlist.name,
       videos: [],
@@ -75,8 +78,10 @@ const getVideosFromPlaylistHandler = async (req, res) => {
     const playlistId = req.params.id;
     const user = await User.findById(userId);
     const playlist = user.playlists.find(
-      (playlist) => playlist.id === playlist
+      (playlist) => playlist.id === playlistId
     );
+    if (!playlist)
+      return res.status(404).json({ message: "Couldn't find playlist" });
     return res.json({ playlist });
   } catch (err) {
     return res.status(500).json({
@@ -98,6 +103,9 @@ const postVideoToPlaylistHandler = async (req, res) => {
 
     if (!playlist)
       return res.status(404).json({ message: "Couldn't find playlist" });
+
+    if (playlist.videos.find((vid) => vid.id === video._id))
+      return res.status(409).json({ message: "Video already in playlist" });
 
     playlist.videos.push(video);
     const updatedPlaylist = user.playlists.map((playlistItem) =>
@@ -124,17 +132,21 @@ const removeVideoFromPlaylistHandler = async (req, res) => {
     const playlistId = req.params.id;
     const videoId = req.params.videoId;
     const user = await User.findById(userId);
-    const playlist = user.playlists.find(
+    let playlist = user.playlists.find(
       (playlist) => playlist.id === playlistId
     );
 
     if (!playlist)
       return res.status(404).json({ message: "Couldn't find playlist" });
 
+    if (!playlist.videos.find(vid => vid._id === videoId))
+      return res.status(409).json({ message: "Video not in playlist" });
+
     playlist = {
-      ...playlist,
-      videos: playlist.videos.filter((video) => video.id !== videoId),
+      ...playlist._doc,
+      videos: playlist.videos.filter((video) => video._id !== videoId),
     };
+
     const updatedPlaylists = user.playlists.map((playlistItem) =>
       playlistItem.id === playlistId ? playlist : playlistItem
     );

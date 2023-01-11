@@ -51,14 +51,14 @@ const signUpHandler = async (req, res) => {
     }
 
     const encryptedPassword = await bcrypt.hash(data.password, 15);
-    const newUser = {
+    const newUser = new User({
       ...data,
       password: encryptedPassword,
       likes: [],
       watchlater: [],
       history: [],
       playlists: [],
-    };
+    });
 
     await newUser.save();
 

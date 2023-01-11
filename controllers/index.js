@@ -32,7 +32,11 @@ const {
   removeVideoFromPlaylistHandler,
 } = require("./playlist.controller");
 
-const { getAllVideosHandler, getVideoHandler } = require("./video.controller");
+const {
+  getAllVideosHandler,
+  getVideoHandler,
+  postVideosHandler,
+} = require("./video.controller");
 
 const {
   getWatchLaterVideosHandler,
@@ -62,6 +66,7 @@ module.exports = {
   removeVideoFromPlaylistHandler,
   getAllVideosHandler,
   getVideoHandler,
+  postVideosHandler,
   getWatchLaterVideosHandler,
   postWatchLaterVideoHandler,
   removeWatchLaterVideoHandler,

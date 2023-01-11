@@ -17,6 +17,12 @@ const postVideoInHistoryHandler = async (req, res) => {
     const userId = req.userId;
     const user = await User.findById(userId);
     const { video } = req.body;
+
+    if (user.history.find((vid) => vid.id === video._id))
+      return res.status(409).json({
+        message: "Video already in history",
+      });
+
     const updatedHistory = [...user.history, video];
 
     const updatedUser = await User.findByIdAndUpdate(
